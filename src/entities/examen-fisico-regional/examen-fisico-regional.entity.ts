@@ -13,7 +13,7 @@ export class ExamenFisicoRegional {
   @Column({ length: 100 })
   Observaciones: string;
 
-  @ManyToOne(() => Consulta, (consulta) => consulta.examenesFisicosRegionales)
+  @ManyToOne(() => Consulta, (consulta) => consulta.examenesFisicosRegionales, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'ID_Consulta' })
   consulta: Consulta;
 }

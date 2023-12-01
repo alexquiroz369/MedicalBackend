@@ -13,6 +13,7 @@ export class DiagnosticoTratamiento {
   @Column()
   Tratamiento: string;
 
-  @ManyToOne(() => Consulta, consulta => consulta.diagnosticosTratamientos)
+  @ManyToOne(() => Consulta, consulta => consulta.diagnosticosTratamientos, { onDelete: 'CASCADE' })
   consulta: Consulta;
+  
 }

@@ -21,6 +21,12 @@ export class Paciente {
 
   @Column({ unique: true, type: 'numeric'})
   Carnet: number;
+
+  @Column({ default: true }) // Agrega la propiedad active con valor por defecto true
+  active: boolean;
+
+  @Column({ nullable: true }) // Ajusta el tipo de datos para el número de celular
+  contacto: number;
   
   @OneToMany(() => Consulta, consulta => consulta.paciente)
   consultas: Consulta[];

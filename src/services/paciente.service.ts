@@ -1,5 +1,5 @@
 // paciente.service.ts
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Paciente } from 'src/entities/pacientes/paciente.entity';
@@ -14,20 +14,36 @@ export class PacienteService {
 
 
   async crearPaciente(datosPaciente: any): Promise<Paciente> {
-    const { Carnet } = datosPaciente;
+    const Carnet = datosPaciente.Carnet;
+    if (Carnet !== undefined) {
+      const pacienteExistente = await this.pacienteRepository.findOne({ where: { Carnet } });
+      console.log(pacienteExistente)
+      if (pacienteExistente === null) {
+        try {
+          const pacienteCreado = await this.pacienteRepository.save(datosPaciente);
+          return pacienteCreado;
+        } catch (error) {
+          // Manejo de otros errores
+          throw new HttpException( 'Error al crear el paciente', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+      else {
+        throw new HttpException('Ya existe un paciente con este carnet', HttpStatus.BAD_REQUEST);
+      }
 
-    // Verificar si ya existe un paciente con el mismo Carnet
-    const pacienteExistente = await this.pacienteRepository.findOne({ where: { Carnet } });
-
-    if (pacienteExistente) {
-      throw new PacienteDuplicadoException();
+    } else {
+      throw new HttpException('Error al crear el paciente', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // Crear el paciente si no hay duplicados
-    return this.pacienteRepository.save(datosPaciente);
   }
+
+
 
   async getAllPacientes(): Promise<Paciente[]> {
     return await this.pacienteRepository.find();
   }
+  async editarPaciente(idPaciente: number, pacienteData: Partial<Paciente>): Promise<Paciente> {
+    await this.pacienteRepository.update(idPaciente, pacienteData);
+    return this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } })
+  }
+
 }

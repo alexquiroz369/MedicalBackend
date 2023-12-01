@@ -19,6 +19,10 @@ export class Consulta {
 
   @Column({ type: 'varchar', length: 255 })
   Nombre_Doctor: string;
+
+  @Column({ type: 'boolean', default: true }) // Añade la propiedad active
+  active: boolean;
+
   
   @Column({ type: 'boolean', default: false }) // Añade la propiedad EnEspera
   EnEspera: boolean;

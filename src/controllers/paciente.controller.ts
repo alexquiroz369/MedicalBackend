@@ -1,7 +1,8 @@
 // paciente.controller.ts
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { PacienteService } from 'src/services/paciente.service';
 import { Paciente } from 'src/entities/pacientes/paciente.entity';
+import { PacienteDuplicadoException } from 'src/exceptions/paciente-duplicado.exception';
 
 @Controller('pacientes')
 export class PacienteController {
@@ -9,16 +10,21 @@ export class PacienteController {
 
   @Post()
   async crearPaciente(@Body() datosPaciente: any) {
-    try {
-      const paciente = await this.pacienteService.crearPaciente(datosPaciente);
-      return { mensaje: 'Paciente creado correctamente', paciente };
-    } catch (error) {
-      // Manejar la excepción y devolver un mensaje personalizado
-      return { mensaje: 'Error al crear el paciente', error: error.message };
-    }
+    const paciente = await this.pacienteService.crearPaciente(datosPaciente);
+    return { mensaje: 'Paciente creado correctamente', paciente };
   }
+  
+  
   @Get()
   getAllPacientes(): Promise<Paciente[]> {
     return this.pacienteService.getAllPacientes();
+  }
+
+  @Put(':idPaciente')
+  async editarPaciente(
+    @Param('idPaciente') idPaciente: number,
+    @Body() pacienteData: Partial<Paciente>,
+  ): Promise<Paciente> {
+    return this.pacienteService.editarPaciente(idPaciente, pacienteData);
   }
 }

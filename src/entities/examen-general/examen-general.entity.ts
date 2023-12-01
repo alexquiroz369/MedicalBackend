@@ -30,7 +30,7 @@ export class ExamenGeneral {
   @Column({ name: 'ID_Consulta' })
   ID_Consulta: number;
 
-  @ManyToOne(() => Consulta, consulta => consulta.examenesGenerales)
+  @ManyToOne(() => Consulta, consulta => consulta.examenesGenerales , { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'ID_Consulta' })
   consulta: Consulta;
 }

@@ -9,8 +9,7 @@ const seedDiagnosticoTratamiento = async () => {
   try {
 
     const diagnosticosTratamientosData = [
-      { Diagnostico: 'Diagnóstico 1', Tratamiento: 'Tratamiento 1' },
-      { Diagnostico: 'Diagnóstico 2', Tratamiento: 'Tratamiento 2' },
+      { Diagnostico: 'Diagnóstico 1', Tratamiento: 'Tratamiento 1' }
       // Agrega más datos según sea necesario
     ];
     for (const data of diagnosticosTratamientosData) {

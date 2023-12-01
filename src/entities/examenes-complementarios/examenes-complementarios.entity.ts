@@ -16,7 +16,7 @@ export class ExamenesComplementarios {
   @Column('text')
   Resultados: string;
 
-  @ManyToOne(() => Consulta, (consulta) => consulta.examenesComplementarios)
+  @ManyToOne(() => Consulta, (consulta) => consulta.examenesComplementarios, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'ID_Consulta' })
   consulta: Consulta;
 }

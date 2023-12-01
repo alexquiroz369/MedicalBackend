@@ -24,12 +24,7 @@ const seedExamenesComplementarios = async () => {
       ID_Consulta: consulta.ID_Consulta,
       Tipo_Examen: 'Tipo de Examen 1',
       Resultados: 'Resultados del Examen 1',
-    },
-    {
-      ID_Consulta: consulta.ID_Consulta,
-      Tipo_Examen: 'Tipo de Examen 2',
-      Resultados: 'Resultados del Examen 2',
-    },
+    }
     // Agrega más datos según sea necesario
   ];
 
