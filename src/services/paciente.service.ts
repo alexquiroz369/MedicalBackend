@@ -24,7 +24,7 @@ export class PacienteService {
           return pacienteCreado;
         } catch (error) {
           // Manejo de otros errores
-          throw new HttpException( 'Error al crear el paciente', HttpStatus.INTERNAL_SERVER_ERROR);
+          throw new HttpException('Error al crear el paciente', HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
       else {
@@ -40,6 +40,9 @@ export class PacienteService {
 
   async getAllPacientes(): Promise<Paciente[]> {
     return await this.pacienteRepository.find();
+  }
+  async getPaciente(idPaciente: number): Promise<Paciente> {
+    return this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } });
   }
   async editarPaciente(idPaciente: number, pacienteData: Partial<Paciente>): Promise<Paciente> {
     await this.pacienteRepository.update(idPaciente, pacienteData);

@@ -28,7 +28,7 @@ export class Paciente {
   @Column({ nullable: true }) // Ajusta el tipo de datos para el número de celular
   contacto: number;
   
-  @OneToMany(() => Consulta, consulta => consulta.paciente)
+  @OneToMany(() => Consulta, consulta => consulta.paciente, {cascade:true})
   consultas: Consulta[];
 
   @OneToMany(() => AntecedentesPersonales, antecedentes => antecedentes.paciente)

@@ -6,18 +6,20 @@ import { PacienteDuplicadoException } from 'src/exceptions/paciente-duplicado.ex
 
 @Controller('pacientes')
 export class PacienteController {
-  constructor(private readonly pacienteService: PacienteService) {}
+  constructor(private readonly pacienteService: PacienteService) { }
 
   @Post()
   async crearPaciente(@Body() datosPaciente: any) {
     const paciente = await this.pacienteService.crearPaciente(datosPaciente);
     return { mensaje: 'Paciente creado correctamente', paciente };
   }
-  
-  
   @Get()
   getAllPacientes(): Promise<Paciente[]> {
     return this.pacienteService.getAllPacientes();
+  }
+  @Get(':idPaciente')
+  getPaciente(@Param('idPaciente') idPaciente: number): Promise<Paciente> {
+    return this.pacienteService.getPaciente(idPaciente);
   }
 
   @Put(':idPaciente')
