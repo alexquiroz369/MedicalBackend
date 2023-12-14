@@ -3,22 +3,36 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Consulta } from 'src/entities/consulta/consulta.entity';
+import { Paciente } from 'src/entities/pacientes/paciente.entity';
 
 @Injectable()
 export class ConsultaService {
   constructor(
     @InjectRepository(Consulta)
     private readonly consultaRepository: Repository<Consulta>,
+    @InjectRepository(Paciente)
+    private readonly pacienteRepository: Repository<Paciente>,
   ) {}
 
   async getAllConsultas(): Promise<Consulta[]> {
     return this.consultaRepository.find();
   }
 
-  async createConsulta(consultaData: Consulta): Promise<Consulta> {
+  async createConsulta(pacienteId: number, consultaData: Consulta): Promise<Consulta> {
+    const paciente = await this.pacienteRepository.findOne({ where: { ID_Paciente: pacienteId } });
+
+    if (!paciente) {
+      throw new Error('Paciente no encontrado');
+    }
+
     const nuevaConsulta = this.consultaRepository.create(consultaData);
+    nuevaConsulta.paciente = paciente;
+
     return this.consultaRepository.save(nuevaConsulta);
   }
+  
+  
+  
 
   async editarDatosConsulta(idConsulta: number, datos: Partial<Consulta>): Promise<Consulta> {
     const consultaExistente = await this.consultaRepository.findOne({

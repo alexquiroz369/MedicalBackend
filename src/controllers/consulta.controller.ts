@@ -13,9 +13,10 @@ export class ConsultaController {
   }
 
   @Post()
-  async createConsulta(@Body() consultaData: Consulta): Promise<Consulta> {
-    return this.consultaService.createConsulta(consultaData);
+  async createConsulta(@Body() consultaData: Consulta, @Body('pacienteId') pacienteId: number): Promise<Consulta> {
+    return this.consultaService.createConsulta(pacienteId, consultaData);
   }
+  
   
   @Put(':idConsulta')
   async editarDatosConsulta(

@@ -1,5 +1,5 @@
 // En consulta.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, CreateDateColumn } from 'typeorm';
 import { Paciente } from '../pacientes/paciente.entity';
 import { ExamenGeneral } from '../examen-general/examen-general.entity';
 import { ExamenFisicoRegional } from '../examen-fisico-regional/examen-fisico-regional.entity';
@@ -11,7 +11,7 @@ export class Consulta {
   @PrimaryGeneratedColumn()
   ID_Consulta: number;
 
-  @Column()
+  @CreateDateColumn()
   Fecha: Date;
 
   @Column({ type: 'text' })
