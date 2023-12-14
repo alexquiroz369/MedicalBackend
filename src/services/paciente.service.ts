@@ -39,8 +39,12 @@ export class PacienteService {
 
 
   async getAllPacientes(): Promise<Paciente[]> {
-    return await this.pacienteRepository.find();
+    return await this.pacienteRepository.find({ where: { active: true } });
   }
+  async getAllPacientesDesactivated(): Promise<Paciente[]> {
+    return await this.pacienteRepository.find({ where: { active: false } });
+  }
+
   async getPaciente(idPaciente: number): Promise<Paciente> {
     return this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } });
   }
@@ -48,5 +52,10 @@ export class PacienteService {
     await this.pacienteRepository.update(idPaciente, pacienteData);
     return this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } })
   }
-
+  
+  async eliminarPaciente(idPaciente: number): Promise<Paciente> {
+    const paciente = await this.pacienteRepository.findOneOrFail({ where: { ID_Paciente: idPaciente } });
+    paciente.active = !paciente.active;
+    return this.pacienteRepository.save(paciente);
+  }
 }

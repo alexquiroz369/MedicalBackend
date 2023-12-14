@@ -25,6 +25,9 @@ export class Paciente {
   @Column({ default: true }) // Agrega la propiedad active con valor por defecto true
   active: boolean;
 
+  @Column({ default: false }) // Agrega la propiedad enEspera con valor por defecto false
+  enEspera: boolean;
+  
   @Column({ nullable: true }) // Ajusta el tipo de datos para el número de celular
   contacto: number;
   
