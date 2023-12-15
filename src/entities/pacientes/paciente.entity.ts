@@ -19,7 +19,7 @@ export class Paciente {
   @Column({ length: 255 })
   Domicilio: string;
 
-  @Column({ unique: true, type: 'numeric'})
+  @Column({ unique: true, type: 'numeric' })
   Carnet: number;
 
   @Column({ default: true }) // Agrega la propiedad active con valor por defecto true
@@ -27,11 +27,14 @@ export class Paciente {
 
   @Column({ default: false }) // Agrega la propiedad enEspera con valor por defecto false
   enEspera: boolean;
-  
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  timestampLlegada: Date;
+
   @Column({ nullable: true }) // Ajusta el tipo de datos para el número de celular
   contacto: number;
-  
-  @OneToMany(() => Consulta, consulta => consulta.paciente, {cascade:true})
+
+  @OneToMany(() => Consulta, consulta => consulta.paciente, { cascade: true })
   consultas: Consulta[];
 
   @OneToMany(() => AntecedentesPersonales, antecedentes => antecedentes.paciente)

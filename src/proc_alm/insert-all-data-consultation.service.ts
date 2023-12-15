@@ -34,7 +34,7 @@ export class ConsultaAllDataService {
       ]
     );
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     throw new HttpException({
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       error: 'Ha ocurrido un error, intentelo mas tarde',

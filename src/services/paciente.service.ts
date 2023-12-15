@@ -17,7 +17,7 @@ export class PacienteService {
     const Carnet = datosPaciente.Carnet;
     if (Carnet !== undefined) {
       const pacienteExistente = await this.pacienteRepository.findOne({ where: { Carnet } });
-      console.log(pacienteExistente)
+      //console.log(pacienteExistente)
       if (pacienteExistente === null) {
         try {
           const pacienteCreado = await this.pacienteRepository.save(datosPaciente);
