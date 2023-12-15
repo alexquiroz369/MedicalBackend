@@ -24,6 +24,8 @@ import { LastDataController } from './proc_alm/last-data-pacient.controller';
 import { LastDataService } from './proc_alm/last-data-pacient.service';
 import { ConsultaAllDataController } from './proc_alm/insert-all-data-consultation.controller';
 import { ConsultaAllDataService } from './proc_alm/insert-all-data-consultation.service';
+import { AllConsultController } from './proc_alm/all-consultation-pacient.controller';
+import { AllConsultService } from './proc_alm/all-consultation-pacient.service';
 
 @Module({
   imports: [
@@ -40,8 +42,8 @@ import { ConsultaAllDataService } from './proc_alm/insert-all-data-consultation.
     }), PacienteModule, AntecedentesPersonales, ConsultaModule, 
     ExamenGeneralModule, ExamenFisicoRegionalModule, ExamenesComplementariosModule, DiagnosticoTratamientoModule
   ],
-  controllers: [AppController, UsuarioController, AllDataController, LastDataController],
-  providers: [AppService, AllDataService, LastDataService],
+  controllers: [AppController, UsuarioController, AllDataController, LastDataController, AllConsultController],
+  providers: [AppService, AllDataService, LastDataService, AllConsultService],
 })
 
 export class AppModule {}
