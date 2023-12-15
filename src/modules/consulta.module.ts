@@ -5,10 +5,12 @@ import { Consulta } from 'src/entities/consulta/consulta.entity';
 import { ConsultaController } from 'src/controllers/consulta.controller';
 import { ConsultaService } from 'src/services/consulta.service';
 import { Paciente } from 'src/entities/pacientes/paciente.entity';
+import { ConsultaAllDataService } from 'src/proc_alm/insert-all-data-consultation.service';
+import { ConsultaAllDataController } from 'src/proc_alm/insert-all-data-consultation.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Consulta, Paciente])],
-  controllers: [ConsultaController],
-  providers: [ConsultaService],
+  controllers: [ConsultaController, ConsultaAllDataController],
+  providers: [ConsultaService, ConsultaAllDataService],
 })
 export class ConsultaModule {}

@@ -1,5 +1,5 @@
 // consulta.controller.ts
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Put, HttpException, HttpStatus } from '@nestjs/common';
 import { ConsultaService } from 'src/services/consulta.service';
 import { Consulta } from 'src/entities/consulta/consulta.entity';
 
@@ -13,8 +13,16 @@ export class ConsultaController {
   }
 
   @Post()
-  async createConsulta(@Body() consultaData: Consulta, @Body('pacienteId') pacienteId: number): Promise<Consulta> {
-    return this.consultaService.createConsulta(pacienteId, consultaData);
+  async createConsulta(@Body() consultaData: Consulta, @Body('pacienteId') pacienteId: number): Promise<any> {
+    try {
+      const consultaId = await this.consultaService.createConsulta(pacienteId, consultaData);
+      return { message: 'Se creo la consulta correctamente', consultaId: consultaId }
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: 'Ha ocurrido un error al crear la consulta',
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
   
   

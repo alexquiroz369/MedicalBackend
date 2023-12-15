@@ -18,21 +18,22 @@ export class ConsultaService {
     return this.consultaRepository.find();
   }
 
-  async createConsulta(pacienteId: number, consultaData: Consulta): Promise<Consulta> {
+  async createConsulta(pacienteId: number, consultaData: Consulta): Promise<number> {
     const paciente = await this.pacienteRepository.findOne({ where: { ID_Paciente: pacienteId } });
-
+  
     if (!paciente) {
       throw new Error('Paciente no encontrado');
     }
-
+  
     const nuevaConsulta = this.consultaRepository.create(consultaData);
     nuevaConsulta.paciente = paciente;
-
-    return this.consultaRepository.save(nuevaConsulta);
+  
+    const consultaGuardada = await this.consultaRepository.save(nuevaConsulta);
+  
+    // Retorna el ID de la consulta creada
+    return consultaGuardada.ID_Consulta;
   }
-  
-  
-  
+
 
   async editarDatosConsulta(idConsulta: number, datos: Partial<Consulta>): Promise<Consulta> {
     const consultaExistente = await this.consultaRepository.findOne({

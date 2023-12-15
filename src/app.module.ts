@@ -22,6 +22,8 @@ import { AllDataController } from './proc_alm/all-data-pacient.controller';
 import { AllDataService } from './proc_alm/all-data-pacient.service';
 import { LastDataController } from './proc_alm/last-data-pacient.controller';
 import { LastDataService } from './proc_alm/last-data-pacient.service';
+import { ConsultaAllDataController } from './proc_alm/insert-all-data-consultation.controller';
+import { ConsultaAllDataService } from './proc_alm/insert-all-data-consultation.service';
 
 @Module({
   imports: [
