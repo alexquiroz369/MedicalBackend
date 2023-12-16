@@ -11,14 +11,12 @@ export class ServiceGateway {
     private server: Server;
 
     handleItemAgregado(item: Paciente): void {
-        console.log('Item agregado:', item);
         this.server.emit('tu-servicio-item-agregado', item);
-    }
-
-    handleItemQuitado(id: number): void {
-        console.log('Item quitado:', id);
+      }
+      
+      handleItemQuitado(id: number): void {
         this.server.emit('tu-servicio-item-quitado', id);
-    }
+      }
     @SubscribeMessage('prueba-desde-cliente')
     handlePruebaDesdeCliente(@MessageBody() data: string): void {
         console.log('Evento recibido desde el cliente:', data);

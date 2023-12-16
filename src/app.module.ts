@@ -25,6 +25,8 @@ import { LastDataService } from './proc_alm/last-data-pacient.service';
 import { AllConsultController } from './proc_alm/all-consultation-pacient.controller';
 import { AllConsultService } from './proc_alm/all-consultation-pacient.service';
 import { ServiceGateway } from './gateways/events.gateway';
+import { DinamicController } from './socketEndpoint/dinamic.controller';
+import { ServiceDinamic } from './socketEndpoint/dinamic.service';
 
 @Module({
   imports: [
