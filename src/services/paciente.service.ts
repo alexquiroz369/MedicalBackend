@@ -4,12 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Paciente } from 'src/entities/pacientes/paciente.entity';
 import { PacienteDuplicadoException } from 'src/exceptions/paciente-duplicado.exception';
+import { SocketGateway } from 'src/gateways/events.gateway';
+
 
 @Injectable()
 export class PacienteService {
   constructor(
     @InjectRepository(Paciente)
     private pacienteRepository: Repository<Paciente>,
+    private socketGateway: SocketGateway,
   ) { }
 
 
@@ -49,9 +52,28 @@ export class PacienteService {
     return this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } });
   }
   async editarPaciente(idPaciente: number, pacienteData: Partial<Paciente>): Promise<Paciente> {
-    await this.pacienteRepository.update(idPaciente, pacienteData);
-    return this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } })
+    const pacienteActualizado = await this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } });
+
+    if (!pacienteActualizado) {
+      throw new Error(`Paciente ${idPaciente} no encontrado`);
+    }
+
+    // Guarda el estado anterior
+    const estadoAnterior = pacienteActualizado.enEspera;
+
+    // Actualiza las propiedades del paciente con los datos recibidos
+    Object.assign(pacienteActualizado, pacienteData);
+
+    const pacienteGuardado = await this.pacienteRepository.save(pacienteActualizado);
+
+    // Si el estado 'enEspera' ha cambiado, emite el evento
+    if (pacienteGuardado.enEspera !== estadoAnterior) {
+      this.socketGateway.server.emit('enEsperaCambiado', { pacienteId: pacienteGuardado.ID_Paciente, enEspera: pacienteGuardado.enEspera });
+    }
+
+    return pacienteGuardado;
   }
+  
   
   async eliminarPaciente(idPaciente: number): Promise<Paciente> {
     const paciente = await this.pacienteRepository.findOneOrFail({ where: { ID_Paciente: idPaciente } });

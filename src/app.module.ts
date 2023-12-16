@@ -24,9 +24,10 @@ import { LastDataController } from './proc_alm/last-data-pacient.controller';
 import { LastDataService } from './proc_alm/last-data-pacient.service';
 import { AllConsultController } from './proc_alm/all-consultation-pacient.controller';
 import { AllConsultService } from './proc_alm/all-consultation-pacient.service';
-import { ServiceGateway } from './gateways/events.gateway';
-import { DinamicController } from './socketEndpoint/dinamic.controller';
-import { ServiceDinamic } from './socketEndpoint/dinamic.service';
+
+
+import { PacientesEnEsperaModule } from './modules/pacientesEnEsperaModule.module';
+import { PacienteEnEspera } from './entities/pacienteEnEspera/pacienteEspera.entity';
 
 @Module({
   imports: [
@@ -38,13 +39,13 @@ import { ServiceDinamic } from './socketEndpoint/dinamic.service';
       password: 'root',
       database: 'medicaldatabase',
       entities: [Paciente, Consulta, AntecedentesPersonales, ExamenGeneral, 
-        ExamenFisicoRegional, ExamenesComplementarios, DiagnosticoTratamiento],
+        ExamenFisicoRegional, ExamenesComplementarios, DiagnosticoTratamiento, PacienteEnEspera],
       synchronize: true,
     }), PacienteModule, AntecedentesPersonales, ConsultaModule, 
-    ExamenGeneralModule, ExamenFisicoRegionalModule, ExamenesComplementariosModule, DiagnosticoTratamientoModule,
+    ExamenGeneralModule, ExamenFisicoRegionalModule, ExamenesComplementariosModule, DiagnosticoTratamientoModule, PacientesEnEsperaModule
   ],
   controllers: [AppController, UsuarioController, AllDataController, LastDataController, AllConsultController],
-  providers: [AppService, AllDataService, LastDataService, AllConsultService, ServiceGateway],
+  providers: [AppService, AllDataService, LastDataService, AllConsultService],
 })
 
 export class AppModule {}
