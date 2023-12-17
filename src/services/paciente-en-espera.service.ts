@@ -11,6 +11,18 @@ export class PacienteEnEsperaService {
   ) {}
 
   async getPacientesEnEspera(): Promise<PacienteEnEspera[]> {
-    return this.pacienteEnEsperaRepository.find();
+    // Obtener pacientes ordenados por timestampLlegada de forma descendente
+    const pacientes = await this.pacienteEnEsperaRepository.find({
+      order: { timestampLlegada: 'ASC' },
+    });
+
+    // Formatear el campo timestampLlegada a solo la hora
+    pacientes.forEach((paciente) => {
+      if (paciente.timestampLlegada instanceof Date) {
+        paciente.horaLlegada = paciente.timestampLlegada.toLocaleTimeString();
+      }
+    });
+
+    return pacientes;
   }
 }

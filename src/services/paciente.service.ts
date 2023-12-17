@@ -61,20 +61,30 @@ export class PacienteService {
     // Guarda el estado anterior
     const estadoAnterior = pacienteActualizado.enEspera;
 
+    // Verifica si el nuevo valor es diferente al valor actual
+    if (pacienteData.enEspera !== undefined && pacienteData.enEspera === estadoAnterior) {
+      throw new Error('No se permite actualizar enEspera con el mismo valor.');
+    }
+
     // Actualiza las propiedades del paciente con los datos recibidos
     Object.assign(pacienteActualizado, pacienteData);
+
+    // Actualiza el campo timestampLlegada con el valor del sistema
+    pacienteActualizado.timestampLlegada = new Date();
 
     const pacienteGuardado = await this.pacienteRepository.save(pacienteActualizado);
 
     // Si el estado 'enEspera' ha cambiado, emite el evento
     if (pacienteGuardado.enEspera !== estadoAnterior) {
+      console.log('Enviando evento enEsperaCambiado al cliente...');
       this.socketGateway.server.emit('enEsperaCambiado', { pacienteId: pacienteGuardado.ID_Paciente, enEspera: pacienteGuardado.enEspera });
     }
 
     return pacienteGuardado;
   }
-  
-  
+
+
+
   async eliminarPaciente(idPaciente: number): Promise<Paciente> {
     const paciente = await this.pacienteRepository.findOneOrFail({ where: { ID_Paciente: idPaciente } });
     paciente.active = !paciente.active;

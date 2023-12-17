@@ -29,6 +29,9 @@ export class PacienteEnEspera {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   timestampLlegada: Date;
 
+  @Column({ type: 'varchar', nullable: true })
+  horaLlegada: string;
+  
   @Column()
   contacto: number;
 }
