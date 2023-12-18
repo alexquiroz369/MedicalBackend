@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { UsuarioController } from './controllers/test/test.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Paciente } from './entities/pacientes/paciente.entity';
-import { DatabaseModule } from './database/database.module';
-import { databaseProviders } from './database/database.providers';
 import { PacienteModule } from './modules/paciente.module';
 import { Consulta } from './entities/consulta/consulta.entity';
 import { AntecedentesPersonales } from './entities/antecedentes/antecedentes-personales.entity';
@@ -28,20 +26,25 @@ import { AllConsultService } from './proc_alm/all-consultation-pacient.service';
 
 import { PacientesEnEsperaModule } from './modules/pacientesEnEsperaModule.module';
 import { PacienteEnEspera } from './entities/pacienteEnEspera/pacienteEspera.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'medicaldatabase',
-      entities: [Paciente, Consulta, AntecedentesPersonales, ExamenGeneral, 
-        ExamenFisicoRegional, ExamenesComplementarios, DiagnosticoTratamiento, PacienteEnEspera],
-      synchronize: true,
-    }), PacienteModule, AntecedentesPersonales, ConsultaModule, 
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+        entities: [Paciente, Consulta, AntecedentesPersonales, ExamenGeneral, 
+          ExamenFisicoRegional, ExamenesComplementarios, DiagnosticoTratamiento, PacienteEnEspera],
+        synchronize: true,
+      }),
+    }), ConfigModule.forRoot(), PacienteModule, AntecedentesPersonales, ConsultaModule, 
     ExamenGeneralModule, ExamenFisicoRegionalModule, ExamenesComplementariosModule, DiagnosticoTratamientoModule, PacientesEnEsperaModule
   ],
   controllers: [AppController, UsuarioController, AllDataController, LastDataController, AllConsultController],
