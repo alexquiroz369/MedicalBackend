@@ -19,8 +19,13 @@ export class PacienteService {
   async crearPaciente(datosPaciente: any): Promise<Paciente> {
     const Carnet = datosPaciente.Carnet;
     if (Carnet !== undefined) {
+      // Convertir los campos a mayúsculas
+      datosPaciente.Nombre = datosPaciente.Nombre?.toUpperCase() || '';
+      datosPaciente.Domicilio = datosPaciente.Domicilio?.toUpperCase() || '';
+      datosPaciente.Sexo = datosPaciente.Sexo?.toUpperCase() || '';
+  
       const pacienteExistente = await this.pacienteRepository.findOne({ where: { Carnet } });
-      //console.log(pacienteExistente)
+  
       if (pacienteExistente === null) {
         try {
           const pacienteCreado = await this.pacienteRepository.save(datosPaciente);
@@ -29,15 +34,14 @@ export class PacienteService {
           // Manejo de otros errores
           throw new HttpException('Error al crear el paciente', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-      }
-      else {
+      } else {
         throw new HttpException('Ya existe un paciente con este carnet', HttpStatus.BAD_REQUEST);
       }
-
     } else {
       throw new HttpException('Error al crear el paciente', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  
 
 
 
@@ -53,35 +57,35 @@ export class PacienteService {
   }
   async editarPaciente(idPaciente: number, pacienteData: Partial<Paciente>): Promise<Paciente> {
     const pacienteActualizado = await this.pacienteRepository.findOne({ where: { ID_Paciente: idPaciente } });
-
+  
     if (!pacienteActualizado) {
       throw new Error(`Paciente ${idPaciente} no encontrado`);
     }
-
-    // Guarda el estado anterior
-    const estadoAnterior = pacienteActualizado.enEspera;
-
-    // Verifica si el nuevo valor es diferente al valor actual
-    if (pacienteData.enEspera !== undefined && pacienteData.enEspera === estadoAnterior) {
-      throw new Error('No se permite actualizar enEspera con el mismo valor.');
+  
+    // Convertir campos a mayúsculas si existen en el pacienteData
+    if (pacienteData.Nombre) {
+      pacienteData.Nombre = pacienteData.Nombre.toUpperCase();
     }
-
+  
+    if (pacienteData.Domicilio) {
+      pacienteData.Domicilio = pacienteData.Domicilio.toUpperCase();
+    }
+  
+    if (pacienteData.Sexo) {
+      pacienteData.Sexo = pacienteData.Sexo.toUpperCase();
+    }
+  
     // Actualiza las propiedades del paciente con los datos recibidos
     Object.assign(pacienteActualizado, pacienteData);
-
+  
     // Actualiza el campo timestampLlegada con el valor del sistema
     pacienteActualizado.timestampLlegada = new Date();
-
+  
     const pacienteGuardado = await this.pacienteRepository.save(pacienteActualizado);
-
-    // Si el estado 'enEspera' ha cambiado, emite el evento
-    if (pacienteGuardado.enEspera !== estadoAnterior) {
-      console.log('Enviando evento enEsperaCambiado al cliente...');
-      this.socketGateway.server.emit('enEsperaCambiado', { pacienteId: pacienteGuardado.ID_Paciente, enEspera: pacienteGuardado.enEspera });
-    }
-
+  
     return pacienteGuardado;
   }
+  
 
 
 
@@ -90,4 +94,31 @@ export class PacienteService {
     paciente.active = !paciente.active;
     return this.pacienteRepository.save(paciente);
   }
+  async toggleEnEspera(pacienteId: number): Promise<Paciente> {
+    const paciente = await this.pacienteRepository.findOne({ where: { ID_Paciente: pacienteId } });
+  
+    if (!paciente) {
+      throw new HttpException(`Paciente con ID ${pacienteId} no encontrado`, HttpStatus.NOT_FOUND);
+    }
+  
+    // Almacena el valor anterior de enEspera
+    const enEsperaAnterior = paciente.enEspera;
+  
+    // Cambia automáticamente el estado de enEspera de true a false y viceversa
+    paciente.enEspera = !paciente.enEspera;
+  
+    // Asigna la fecha actual a timestampLlegada
+    paciente.timestampLlegada = new Date();
+  
+    const pacienteActualizado = await this.pacienteRepository.save(paciente);
+  
+    // Emite el evento si el estado 'enEspera' ha cambiado
+    if (enEsperaAnterior !== pacienteActualizado.enEspera) {
+      this.socketGateway.server.emit('enEsperaCambiado', { pacienteId: pacienteActualizado.ID_Paciente, enEspera: pacienteActualizado.enEspera });
+    }
+  
+    return pacienteActualizado;
+  }
+  
+  
 }

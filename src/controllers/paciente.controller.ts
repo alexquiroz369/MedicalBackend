@@ -1,5 +1,5 @@
 // paciente.controller.ts
-import { Controller, Get, Post, Body, Put, Param, HttpException, HttpStatus, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, HttpException, HttpStatus, Delete, ParseIntPipe } from '@nestjs/common';
 import { PacienteService } from 'src/services/paciente.service';
 import { Paciente } from 'src/entities/pacientes/paciente.entity';
 import { PacienteDuplicadoException } from 'src/exceptions/paciente-duplicado.exception';
@@ -46,6 +46,11 @@ export class PacienteController {
         error: 'No se pudo cambiar el estado del paciente, por favor intente de nuevo más tarde.',
       }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+  
+  @Put('togglee/:id')
+  async toggleEnEspera(@Param('id', ParseIntPipe) id: number): Promise<Paciente> {
+    return this.pacienteService.toggleEnEspera(id);
   }
   
 
