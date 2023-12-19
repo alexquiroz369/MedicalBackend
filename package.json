@@ -24,7 +24,11 @@
     "seed-examen-general": "ts-node ./src/entities/seed-examenes-generales.ts",
     "seed-examen-regional": "ts-node ./src/entities/seed-examen-fisico-regional.ts",
     "seed-examen-complementario": "ts-node ./src/entities/seed-examenes-complementarios.ts",
-    "seed-diagnostico": "ts-node ./src/entities/seed-diagnosticos-tratamientos.ts"
+    "seed-diagnostico": "ts-node ./src/entities/seed-diagnosticos-tratamientos.ts",
+    "migrate": "npx typeorm migration:run",
+    "migration:create": "npx typeorm migration:create",
+    "migration:generate": "npx typeorm migration:generate",
+    "migration:revert": "npx typeorm migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.10",

@@ -30,25 +30,30 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        entities: [Paciente, Consulta, AntecedentesPersonales, ExamenGeneral, 
-          ExamenFisicoRegional, ExamenesComplementarios, DiagnosticoTratamiento, PacienteEnEspera],
-        synchronize: true,
+        host: configService.get('TYPEORM_HOST'),
+        port: +configService.get<number>('TYPEORM_PORT'),
+        username: configService.get('TYPEORM_USERNAME'),
+        password: configService.get('TYPEORM_PASSWORD'),
+        database: configService.get('TYPEORM_DATABASE'),
+        entities: [configService.get('TYPEORM_ENTITIES')],
+        synchronize: configService.get<boolean>('TYPEORM_SYNCHRONIZE'),
+        migrations: [configService.get('TYPEORM_MIGRATIONS')],
+        migrationsDir: configService.get('TYPEORM_MIGRATIONS_DIR'),
+        logging: configService.get<boolean>('TYPEORM_LOGGING'),
       }),
-    }), ConfigModule.forRoot(), PacienteModule, AntecedentesPersonales, ConsultaModule, 
+      inject: [ConfigService],
+    }), PacienteModule, AntecedentesPersonales, ConsultaModule, 
     ExamenGeneralModule, ExamenFisicoRegionalModule, ExamenesComplementariosModule, DiagnosticoTratamientoModule, PacientesEnEsperaModule
   ],
   controllers: [AppController, UsuarioController, AllDataController, LastDataController, AllConsultController],
   providers: [AppService, AllDataService, LastDataService, AllConsultService],
 })
 
-export class AppModule {}
+export class AppModule {
+
+}
